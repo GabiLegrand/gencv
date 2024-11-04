@@ -1,3 +1,4 @@
+#!/env/Scripts/python.exe
 
 from openai import OpenAI
 import os
@@ -10,7 +11,7 @@ import sys
 
 if __name__ == "__main__":
     load_dotenv()
-    
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--r",
