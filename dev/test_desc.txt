@@ -1,0 +1,56 @@
+
+À propos de l’offre d’emploi
+R8 Technologies is an international proptech company scaling out the award-winning R8 Digital Operator. It is an Artificial Intelligence based SaaS solution, which significantly helps to reduce building energy costs, minimizes CO2 emissions and helps facility managers to focus on more important duties. In short – we want to make the world a greener place and we call you to join with us on that important journey!
+
+
+
+We are currently seeking a talented Python Developer to join our team.
+
+
+
+Technical skills:
+
+Strong understanding of core Python concepts, and advanced features. 
+Experience with SQL database systems, including knowledge of ORM (e.g., SQLAlchemy). 
+Ability to write and understand unit tests and integration tests using frameworks like unittest, pytest, or nose. 
+Proficiency with Git for version control and experience with platforms like GitHub, GitLab, or Bitbucket. 
+Familiarity with development tools like virtual environments (venv, pipenv, anaconda) and package management (pip). 
+Skills in debugging and profiling Python code to identify and fix performance bottlenecks. 
+Prioritization of clean and sustainable code principles. 
+
+
+Non-Technical skills:
+
+Strong analytical skills to identify issues and find effective solutions. 
+Ability to communicate technical concepts clearly and effectively with team members and stakeholders. 
+Ability to collaborate with cross-functional teams. 
+Willingness to learn new technologies and keep up with industry trends. 
+Ability to apply new knowledge to current projects. 
+
+
+Experience:
+
+2-5 years of proven experience in Python development or related fields. 
+Involvement in several full project life cycles from conception to deployment. 
+Experience with maintaining and extending existing codebases. 
+
+
+Additional skills (optional but beneficial)
+
+Experience with creating and consuming APIs. 
+Knowledge of web services (SOAP, REST) and related protocols. 
+Experience with web frameworks like Django or Flask for developing web applications. 
+Understanding of RESTful API design and implementation. 
+Basic knowledge of front-end technologies like HTML, CSS, and JavaScript. 
+Experience with data visualization tools like Matplotlib, Seaborn, or Plotly. 
+Understanding of Continuous Integration and Continuous Deployment practices and tools like Jenkins, Travis CI, or GitLab CI/CD. 
+Experience and understanding of industrial protocols like BACnet, Modbus, OPC is a good bonus.
+
+
+Benefits of working at R8tech:
+
+Motivating compensation
+Flexible hours to promote work-life balance
+Sports compensation to support employee wellness
+Friendly, open, supportive colleagues
+Board games on Fridays

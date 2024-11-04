@@ -81,13 +81,12 @@ class CvBuilder:
         self.generate_profile_description()
         self.generate_profile_title()
         
-        if not os.path.exists('current'):
-            os.makedirs('current')
-        self.save('./current/current.json')
-        self.generate_cv_pdf()
+        # Save CV build
+        self.save()
+        self.generate_cv_pdf("output/cv.pdf")
 
     
-    def generate_cv_pdf(self):
+    def generate_cv_pdf(self,output_file):
         if  self.work_context != None and \
                 self.project_context != None and \
                 self.relevant_skillset != None and \
@@ -100,7 +99,7 @@ class CvBuilder:
                                             self.relevant_skillset)
             
             try:
-                pdfkit.from_string(html_content, "./cv_custom.pdf")
+                pdfkit.from_string(html_content, output_file)
                 print('CV created!')
             except Exception as e:
                 print(f"Error generating PDF: {e}")
