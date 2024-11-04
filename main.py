@@ -6,15 +6,25 @@ import json
 import os
 from dotenv import load_dotenv
 from src.LLM_prompting import *
+from src.html_generation import * 
+import pdfkit 
+
+import argparse
+
 
 if __name__ == "__main__":
     load_dotenv()
-    
-    
-    runtime_type = "openai" # `local` or `openai`
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--r",
+        choices=["local", "openai"],
+        default="openai",
+        help="runetime should be 'local' for local llm or 'openai' for openai API"
+    )
+    args = parser.parse_args()
 
-
-    if runtime_type == "local":
+ 
+    if args.r == "local":
         model_choice = os.getenv("LOCAL_MODEL_CHOICE")
         endpoint = os.getenv("LOCAL_ENDPOINT")
 
@@ -22,7 +32,7 @@ if __name__ == "__main__":
             api_key="none",
             base_url=endpoint,
         )
-    elif runtime_type == "openai":
+    elif args.r == "openai":
         model_choice = os.getenv("OPENAI_MODEL_CHOICE")
         openai_api_key = os.getenv("OPEN_AI_API_KEY")
 
@@ -40,7 +50,7 @@ if __name__ == "__main__":
     with open('./personal_info.json','r') as fd:
         user_data = json.load(fd)
 
-
+    static_context = user_data['static_context']
     general_info = user_data['general_info'] 
     skills = user_data['skills']
     work_experience = user_data['work_experience']
@@ -48,14 +58,6 @@ if __name__ == "__main__":
     education = user_data['education'] 
 
 
-# client
-# job_description
-# general_info
-# skills
-# work_experience
-# work_experience_meta
-# education
-# system
     with open('job_description.txt','r') as fd:
         job_description = fd.read()
 
@@ -69,5 +71,17 @@ if __name__ == "__main__":
     CV_skillset = generate_skill_set_list(client, job_info, skills, system, verbose)
 
 
-# relevant_skillset = [skill for skill in CV_skillset if skill.lower() not in skills.lower()]
-# formated_CV_work_xp = format_CV_work_experience(work_selected_descriptions,work_experience_meta)
+    relevant_skillset = [skill for skill in CV_skillset if skill.lower() not in skills.lower()]
+    formated_CV_work_xp = format_CV_work_experience(work_selected_descriptions,work_experience_meta)
+
+    html_content = generate_cv_html(static_context,
+                    profile_title, profile_description,
+                    education, formated_CV_work_xp, selected_project,
+                    relevant_skillset)
+    
+
+    try:
+        pdfkit.from_string(html_content, "./cv_custom.pdf")
+        print('CV created!')
+    except Exception as e:
+        print(f"Error generating PDF: {e}")

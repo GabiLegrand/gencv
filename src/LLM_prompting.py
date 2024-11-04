@@ -19,8 +19,8 @@ def save_prompt(folder_name: str, content: str):
         file.write(content)
 
 def prompt_llm(client, prompt, system, verbose=True):
-    if verbose:
-        save_prompt('debug',prompt)
+    # if verbose:
+    #     save_prompt('debug',prompt)
     
     response = client.chat.completions.create(
         model=system['model_choice'],
@@ -301,22 +301,24 @@ Each selected project should:
 {work_experience}
 
 Expected format
-[EXP]NAME: name for the project
-DESCRIPTION: Description for the project[/EXP]
+[EXP]PR_NAME: name for the project
+PR_DESCRIPTION: Description for the project[/EXP]
 
 Generate the best-matching list of projects based on the information provided.
 Remember to enclose each project with [EXP][/EXP]
+PR_NAME and PR_DESCRIPTION are keyword, include them in the formating
+
 **Do not include any introductory, additionnal, notes or concluding messages. only provide the selected information.**
 """
 
     projects_selected_raw = prompt_llm(client, prompt,system,verbose)
     
     # Regex pattern to match the structure of each experience block
-    pattern = r"\[EXP\]NAME:\s*(.+?)\nDESCRIPTION:\s*(.+?)\[/EXP\]"
+    pattern = r"\[EXP\]PR_NAME[ ]?:\s*(.+?)\nPR_DESCRIPTION[ ]?:\s*(.+?)\[/EXP\]"
     
     # Find all matches in the input string
     matches = re.findall(pattern, projects_selected_raw, re.DOTALL)
-    
+    print(matches)
     # Convert matches to a structured format (list of dictionaries)
     experiences = []
     for match in matches:

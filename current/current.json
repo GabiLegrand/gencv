@@ -1,0 +1,58 @@
+{
+  "job_infos": "1. **General Description**: The role involves developing and maintaining Python-based solutions as part of an AI-driven SaaS platform focused on energy efficiency.\n   - **Keywords**: Python Developer, AI, SaaS, energy efficiency, proptech.\n\n2. **Job Responsibilities**: \n   - Develop and maintain Python applications.\n   - Write and understand unit and integration tests.\n   - Collaborate with cross-functional teams.\n   - Debug and profile Python code for performance.\n   - Maintain and extend existing codebases.\n   - Communicate technical concepts effectively.\n\n   - **Keywords**: application development, unit tests, integration tests, collaboration, debugging, code maintenance.\n\n3. **Requirements**: \n   - Strong understanding of core and advanced Python concepts.\n   - Experience with SQL and ORM (e.g., SQLAlchemy).\n   - Proficiency in version control using Git.\n   - 2-5 years of experience in Python development.\n   - Familiarity with development tools and clean code principles.\n\n   - **Keywords**: Python, SQL, ORM, Git, experience, clean code principles.",
+  "work_context": [
+    {
+      "title": "Fullstack Developer",
+      "start_date": "july 2023",
+      "end_date": "Today",
+      "company": "HelioIT",
+      "description": "Developed AI-driven SaaS solutions, focusing on backend development and database schema design while ensuring application performance and code maintenance. Collaborated with cross-functional teams to integrate AI technologies, demonstrating effective communication and product ownership."
+    },
+    {
+      "title": "Fullstack Developer",
+      "start_date": "july 2023",
+      "end_date": "October 2024",
+      "company": "Intrad",
+      "description": "Developed Python applications and managed Git for version control, ensuring collaboration and efficient code maintenance. Engaged in debugging and performance profiling while working on various integrations and API creations, contributing to robust application development."
+    },
+    {
+      "title": "Fullstack Developer",
+      "start_date": "september 2020",
+      "end_date": "October 2024",
+      "company": "Freelancing",
+      "description": "Developed machine learning models using Python and Django, demonstrating advanced Python skills and a strong understanding of AI concepts. Created fullstack web applications with an emphasis on maintaining clean code principles and responsive design."
+    }
+  ],
+  "project_context": [
+    {
+      "name": "E-learning Application Development",
+      "description": "Developed and maintained Python-based e-learning applications utilizing Django, integrated with cloud infrastructure and APIs, ensuring user engagement and efficient resource access."
+    },
+    {
+      "name": "SAAS Development",
+      "description": "Led the backend development of a SaaS platform with a focus on energy efficiency, employing Python, database schema design, and Vue.js for a seamless user experience."
+    },
+    {
+      "name": "Machine Learning Models for Financial Forecasting",
+      "description": "Developed machine learning models using Scikit-Learn and Python for financial forecasting, showcasing advanced Python skills and a strong understanding of machine learning principles."
+    },
+    {
+      "name": "API Creation for CRM Development",
+      "description": "Created and maintained APIs for a CRM system, integrating various services like Zoom and GSuite, demonstrating collaboration and effective communication of technical concepts within cross-functional teams."
+    }
+  ],
+  "relevant_skillset": [
+    "ORM",
+    "Application development",
+    "Unit tests",
+    "Integration tests",
+    "Collaboration",
+    "Performance profiling",
+    "Code maintenance",
+    "AI",
+    "SaaS",
+    "Machine learning"
+  ],
+  "profile_description": "I am a Python Developer with strong expertise in developing and maintaining Python applications, particularly in AI-driven SaaS environments focused on energy efficiency. With 4 years of fullstack development experience, I am proficient in unit and integration testing, debugging, and code maintenance, adhering to clean code principles. My skills include SQL, Git, and working with cross-functional teams to deliver effective solutions.",
+  "profile_title": "Python Developer - AI SaaS Solutions"
+}
