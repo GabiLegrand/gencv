@@ -1,0 +1,9 @@
+.env 
+*/__pycache__/*
+*__pycache__*
+env/*
+env
+
+personal_info.json
+dicovers.txt
+job_description.txt

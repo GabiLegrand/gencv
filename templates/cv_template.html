@@ -1,0 +1,104 @@
+<style>
+
+@page {
+  size: A4;
+  margin: 0;
+}
+@media print {
+  html, body {
+    width: 210mm;
+    height: 297mm;
+
+  }
+  
+  /* ... the rest of the rules ... */
+}
+
+body{
+    font-family: system-ui;
+    font-size: 12px;
+    padding: 50px;
+    padding-left: 100px;
+    padding-right: 100px;
+}
+</style>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Gabriel Ludel</title>
+    <style>
+        /* Add your styling here */
+    </style>
+</head>
+<body>
+    <header >
+        <h1>{{full_name}}</h1>
+        <p><b>{{job_title}}</b>
+        <br>Location: {{location}}
+        <br>Contact: {{email}} | {{phone}}
+        <br>Portfolio: {{portfolio_link}}</p>
+    </header>
+    <div
+    style="background-color: grey;
+    width: 100%;height: 1px;"
+    ></div>
+    <section >
+        <h2>Profile</h2>
+        <p>{{profile_description}}</p>
+    </section>
+
+    <div
+    style="background-color: grey;
+    width: 100%;height: 1px;"
+    ></div>
+
+    <section>
+        <h2>Work Experience</h2>
+        {{work_experience}}
+        <!-- Repeat for each experience -->
+    </section>
+    <br>
+    <div
+    style="background-color: grey;
+    width: 100%;height: 1px;"
+    ></div>
+
+    <section>
+        <h2>Projects</h2>
+        <ul>
+            {{projects}}
+            <!-- Add more as needed -->
+        </ul>
+    </section>
+
+    <div
+    style="background-color: grey;
+    width: 100%;height: 1px;"
+    ></div>
+
+    <section >
+        <h2>Education</h2>
+        {{educations}}
+    </section>
+    <br>
+    <div
+    style="background-color: grey;
+    width: 100%;height: 0.5px;"
+    ></div>
+
+    <section>
+        <h2>Technical Skills</h2>
+        <p>
+            <b>Front-End</b>: Vue.js, React, HTML, CSS <br>
+            <b>Back-End</b>: Django, Node.js, PHP <br>
+            <b>DevOps</b>: AWS, Docker, Git, GitLab CI/CD <br>
+            <b>Data & Analytics</b>: SQL, Tableau, Power BI <br>
+            <b>Machine Learning</b> : Python,Sci-kit, Tensorflow, Collab, LLM, Pytorch <br>
+            <b>Relevant skillset</b> :{{skills_list}}
+        </p>
+    </section>
+</body>
+</html>

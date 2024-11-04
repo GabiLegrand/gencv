@@ -1,0 +1,7 @@
+The formating and giving enough information to the model is primordial to make it understand
+
+Models are not smart, but they can understand, which is impressive by itsefl. 
+Lack of information and poor prompting produce failed answer
+
+
+The models are design to offer introduction and outroduction message at almost any answer, in order to exploite t
