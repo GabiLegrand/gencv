@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from src.LLM_prompting import *
 from src.html_generation import * 
 import pdfkit 
+from bson import ObjectId
 
 class CvBuilder:
     def __init__(self, mongo_controller,  llm_client, llm_system, verbose=True, user_id=None):
@@ -45,10 +46,13 @@ class CvBuilder:
         r = self.mongo_controller.save_user_cv(self.user_id, state)
         print(f"State saved {r}")
 
-    def load(self):
+    def load(self, cv_id:str = None):
         """Load the entire object from a mongo"""
-
-        state = self.mongo_controller.retrieve_cv_info({'user_id': self.user_id})
+        if cv_id:
+            print(cv_id)
+            state = self.mongo_controller.retrieve_cv_info({"_id": ObjectId(cv_id)})
+        else :
+            state = self.mongo_controller.retrieve_cv_info({'user_id': self.user_id})
         if state :
             self.job_infos = state['job_infos']
             self.work_context = state['work_context']

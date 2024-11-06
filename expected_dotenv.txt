@@ -1,0 +1,4 @@
+OPEN_AI_API_KEY = "your api key"
+LOCAL_ENDPOINT = "your custom endpoint"
+LOCAL_MODEL_CHOICE = "your custom model name"
+OPENAI_MODEL_CHOICE = "gpt-4o-mini"

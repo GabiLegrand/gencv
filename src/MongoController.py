@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from pymongo.errors import PyMongoError
 import datetime
+from bson import ObjectId
 
 class MongoController:
     # For local usage only, so we don't need to have complexe db connection
@@ -48,3 +49,11 @@ class MongoController:
             return self.mongo_cv_coll.find_one(query, sort=[("creation_date" , -1)])
         else :
             return self.mongo_cv_coll.find_one(sort=[("creation_date" , -1)])
+        
+
+    def update_cv(self, cv_id, cv_data):
+        result = self.mongo_cv_coll.update_one({'_id': ObjectId(cv_id)}, {'$set': cv_data})
+        return result
+
+    def get_all_cvs_meta(self):
+        return self.mongo_cv_coll.find({}, {'creation_date': -1, 'profile_title': 1})
