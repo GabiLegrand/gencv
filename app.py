@@ -1,4 +1,4 @@
-
+#!./env/Scripts/python.exe
 
 from openai import OpenAI
 import os
