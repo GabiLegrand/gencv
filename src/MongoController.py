@@ -51,6 +51,13 @@ class MongoController:
             return self.mongo_cv_coll.find_one(sort=[("creation_date" , -1)])
         
 
+    def delete_cv(self, cv_id):
+        result_find = self.mongo_cv_coll.find_one({'_id': ObjectId(cv_id)})
+        if result_find :
+            result_delete = self.mongo_cv_coll.delete_one({'_id': ObjectId(cv_id)})
+            return result_delete
+        else : 
+            return None 
     def update_cv(self, cv_id, cv_data):
         result = self.mongo_cv_coll.update_one({'_id': ObjectId(cv_id)}, {'$set': cv_data})
         return result

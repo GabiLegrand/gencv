@@ -12,6 +12,20 @@ from bson import ObjectId
 import json
 from flask_cors import CORS,cross_origin
 
+import argparse
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument(
+    "--env",
+    choices=["local", "docker"],
+    default="local",
+)
+
+args = parser.parse_args()
+env_runtime = args.env
+
+load_dotenv()
 
 #############
 app = Flask(__name__,static_folder='static/dist', template_folder='static/dist')
@@ -31,13 +45,17 @@ app.json_encoder = JSONEncoder
 
 ################
 
+if env_runtime == "local":
+    MONGO_URI = "mongodb://localhost:27017/"
 
+else :
+    # # Initialize MongoController
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 
-# Initialize MongoController
-mongo_controller = MongoController()
+mongo_controller = MongoController(MONGO_URI)
 
 model_choice = os.getenv("OPENAI_MODEL_CHOICE")
-openai_api_key = os.getenv("OPEN_AI_API_KEY")
+openai_api_key = os.getenv("OPEN_AI_API_KEY","failed?")
 
 client = OpenAI(
     api_key=openai_api_key
@@ -105,6 +123,17 @@ def update_cv(cv_id):
     except Exception:
         return jsonify({'error': 'Invalid CV ID'}), 400
 
+@app.route('/cv/<cv_id>', methods=['DELETE'])
+@cross_origin(origin="*", supports_credentials=True)
+def delete_cv(cv_id):
+    try:
+        result = mongo_controller.delete_cv(cv_id)
+        if result != None:
+            return jsonify({'message': 'CV deleted successfully'})
+        else:
+            return jsonify({'error': 'CV not found'}), 404
+    except Exception:
+        return jsonify({'error': 'Invalid CV ID'}), 400
 
 @app.route('/generate_cv', methods=['POST'])
 @cross_origin(origin="*", supports_credentials=True)
@@ -136,13 +165,16 @@ def generate_cv():
     # Load the CV using the provided cv_id
     builder.load(cv_id)
     # Generate the CV PDF
-    builder.generate_cv_pdf(output_path)
-    # try:
-    # except Exception as e:
-    #     # Handle any errors that occur
-    #     return jsonify({"error": str(e)}), 500
+    try:
+        builder.generate_cv_pdf(output_path)
+    except Exception as e:
+        # Handle any errors that occur
+        return jsonify({"error": str(e)}), 500
 
     # Send the generated PDF file as a response
     return send_file(output_path, as_attachment=True, download_name="cv.pdf", mimetype='application/pdf')
 if __name__ == '__main__':
-    app.run(debug=True)
+    if env_runtime == "local":
+        app.run(debug=True)
+    else :
+        app.run(debug=True,host="0.0.0.0",port=8000)

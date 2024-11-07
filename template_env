@@ -1,0 +1,8 @@
+OPEN_AI_API_KEY = "KEY"
+LOCAL_ENDPOINT = "custom endpoint"
+LOCAL_MODEL_CHOICE = "hermes-3-llama-3.1-8b"
+OPENAI_MODEL_CHOICE = "Open ai model"
+MONGO_URI = 'your mongo uri'
+
+# If you use Mongodb docker container
+# MONGO_URI = 'mongodb://host.docker.internal:27017/'
