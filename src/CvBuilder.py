@@ -19,12 +19,14 @@ class CvBuilder:
             user_data = mongo_controller.retrieve_user_info()
 
 
-        self.static_context = user_data['static_context']
+        self.coordinates = user_data['coordinates']
         self.general_info = user_data['general_info'] 
         self.skills = user_data['skills']
         self.work_experience = user_data['work_experience']
         self.work_experience_meta = user_data['work_experience_meta'] 
         self.education_context = user_data['education'] 
+
+        self.coordinates = user_data['coordinates']
         self.user_id = user_data['_id']
         
         self.verbose = verbose
@@ -40,10 +42,12 @@ class CvBuilder:
             'relevant_skillset': self.relevant_skillset,
             'profile_description': self.profile_description,
             'profile_title': self.profile_title,
-            'job_description' : self.job_description
+            'job_description' : self.job_description,
+            'company_info' : self.company_info,
+            'cover_letter' : self.cover_letter
         }
 
-        r = self.mongo_controller.save_user_cv(self.user_id, state)
+        r = self.mongo_controller.save_user_cv(self.user_id,self.coordinates, state)
         print(f"State saved {r}")
 
     def load(self, cv_id:str = None):
@@ -61,7 +65,8 @@ class CvBuilder:
             self.profile_description = state['profile_description']
             self.profile_title = state['profile_title']
             self.job_description = state['job_description']
-
+            self.company_info = state.get('company_info', {'name' : 'Unknown', 'description': 'Unknown'})
+            self.cover_letter = state.get('cover_letter', '')
             state_id = state['_id']
             print(f"State {state_id} loaded for user {self.user_id}")
         else :
@@ -75,6 +80,8 @@ class CvBuilder:
         self.profile_description = None 
         self.profile_title = None
         self.job_description = None 
+        self.company_info = None
+        self.cover_letter = None 
 
     def generate_cv_from_job_description(self,job_description):
         self.job_description = job_description
@@ -84,6 +91,7 @@ class CvBuilder:
         self.generate_relevant_skillset()
         self.generate_profile_description()
         self.generate_profile_title()
+        self.generate_cover_letter()
         
         # Save CV build
         self.save()
@@ -97,7 +105,7 @@ class CvBuilder:
                 self.profile_description != None and \
                 self.profile_title != None :
             
-            html_content = generate_cv_html(self.static_context, self.profile_title, 
+            html_content = generate_cv_html(self.coordinates, self.profile_title, 
                                             self.profile_description, self.education_context, 
                                             self.work_context, self.project_context,
                                             self.relevant_skillset)
@@ -109,6 +117,9 @@ class CvBuilder:
                 print(f"Error generating PDF: {e}")
 
 
+    def extract_company_info(self,job_description):
+        self.company_info = extract_company_info_from_description(self.llm_client, job_description, 
+                                              self.llm_system, self.verbose)
 
     def extract_job_infos(self,job_description):
         """
@@ -120,11 +131,16 @@ class CvBuilder:
             String : a summary of the job, requirements and responsabilities
         """
         self.reset_state()
+        self.extract_company_info(job_description)
         self.job_infos = extract_job_info_from_description(self.llm_client, 
                                                            job_description, 
                                                            self.llm_system, 
                                                            self.verbose)
-    
+    def generate_cover_letter(self):
+        self.cover_letter = generate_cover_letter(self.llm_client, self.company_info, self.job_infos, 
+                            self.coordinates, self.general_info, self.work_experience, self.skills, 
+                            self.education_context, self.llm_system, verbose=True)
+
     def select_work_experience(self):
         """
         Select a set of work experience from the user info, add a description with keywords for

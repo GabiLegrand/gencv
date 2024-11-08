@@ -66,6 +66,31 @@ def format_CV_work_experience(descriptions,work_experience_meta):
 
 #################
 
+def extract_company_info_from_description(client, job_description, system, verbose=True):
+    prompt= f"""Given the job description below, identify the company name and write a brief, compelling description of the company. Use the following format to structure the output:
+
+    [CNAME] company name [/CNAME]
+    [CDESC] company description [/CDESC]
+
+    Job Description:
+    [Paste the job description here]
+
+    The company name should feel appropriate to the industry and the nature of the job, and the description should convey the company's mission, values, and area of expertise in a way that aligns with the job role.
+    {job_description}
+    """
+
+    company_info_raw = prompt_llm(client, prompt,system,verbose)
+
+    pattern = r"\[CDESC\](.*?)\[/CDESC\]"
+    match = re.search(pattern, company_info_raw, re.DOTALL)
+    company_desc = match.group(1) if match else None
+
+    pattern = r"\[CNAME\](.*?)\[/CNAME\]"
+    match = re.search(pattern, company_info_raw, re.DOTALL)
+    company_name = match.group(1) if match else None
+
+    company_info = {"name" : company_name, "description" : company_desc}
+    return company_info
 
 def extract_job_info_from_description(client, job_description, system, verbose=True):
    prompt= f"""Extract the following information from the job description provided, follow this template:
@@ -94,6 +119,56 @@ Here is the job description:
 
    return description
 
+
+
+def generate_cover_letter(client, company_info, job_info, 
+                          user_coordinates, user_general_info, user_work_experience, user_skills, 
+                          user_education, system, verbose=True):
+    job_info_full = f"""```
+    **Company name** : {company_info['name']}
+    **Company description** : {company_info['description']}
+
+    {job_info}```
+    """
+
+    prompt = f"""Write a personalized cover letter based on the following information, designed to align closely with the job and company requirements. 
+    Make the letter as keyword-rich as possible, reflecting the skills, values, and experience that match the job role. 
+
+    Enclose the body of the coverletter with this format:
+    ```
+    [CLETTER]
+    Hello ..
+
+    body of the cover letter 
+    Best regards,
+    candidate name
+
+    Candidate coordinates
+    [/CLETTER]
+    ```"
+
+    ##Job and Company Information:
+    {job_info_full}
+    ##Candidate Experience:
+    {user_general_info}
+
+    {user_work_experience}
+
+    {user_education}
+
+    {user_skills}
+
+    ## Candidate coordinates
+    {user_coordinates}
+    The cover letter should be engaging and polished, showing how the candidate's background uniquely qualifies them for the role and how their experience aligns with the company’s mission, values, and goals
+    """
+
+    cover_letter_raw = prompt_llm(client, prompt,system,verbose)
+    pattern = r"\[CLETTER\](.*?)\[/CLETTER\]"
+    match = re.search(pattern, cover_letter_raw, re.DOTALL)
+    cover_letter = match.group(1) if match else None
+
+    return cover_letter
 
 
 

@@ -31,9 +31,10 @@ class MongoController:
         else :
             return self.mongo_user_coll.find_one(sort=[("creation_date" , -1)])
         
-    def save_user_cv(self, user_id, cv_info):
+    def save_user_cv(self, user_id,user_coordinates, cv_info):
         cv_info['creation_date'] = datetime.datetime.now()
         cv_info['user_id'] = user_id
+        cv_info['user_coordinates'] = user_coordinates
 
         insert = self.mongo_cv_coll.insert_one(cv_info)
         # if insert.inserted_id :
