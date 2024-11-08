@@ -7,8 +7,10 @@ import pdfkit
 from bson import ObjectId
 
 class CvBuilder:
-    def __init__(self, mongo_controller,  llm_client, llm_system, verbose=True, user_id=None):
-        
+    def __init__(self, mongo_controller,  llm_client, llm_system, pdf_url, verbose=True, user_id=None):
+        if not os.path.exists('./output/'):
+            os.makedirs('./output/')
+        self.pdf_url = pdf_url
         self.llm_system = llm_system
         self.llm_client = llm_client
         self.mongo_controller = mongo_controller
@@ -129,8 +131,11 @@ class CvBuilder:
                                        self.cover_letter)
             
             try:
-                pdfkit.from_string(html_content, output_file)
+                
+                pdf_content = convet_html_to_pdf(self.pdf_url, html_content,output_file)
+                # pdfkit.from_string(html_content, output_file)
                 print('Cover letter created!')
+                return pdf_content
             except Exception as e:
                 print(f"Error generating PDF: {e}")
 
@@ -148,8 +153,11 @@ class CvBuilder:
                                             self.relevant_skillset)
             
             try:
-                pdfkit.from_string(html_content, output_file)
+                pdf_content = convet_html_to_pdf(self.pdf_url, html_content,output_file)
+                # pdfkit.from_string(html_content, output_file)
                 print('CV created!')
+                return pdf_content
+
             except Exception as e:
                 print(f"Error generating PDF: {e}")
 

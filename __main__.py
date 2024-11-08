@@ -58,6 +58,7 @@ if __name__ == "__main__":
     }
     
 
+    pdf_url = "https://loclahost:80"
     mongo_controller = MongoController()
     builder = CvBuilder(mongo_controller, client, system)
 

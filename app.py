@@ -10,6 +10,7 @@ import argparse
 import sys 
 from bson import ObjectId
 import json
+from io import BytesIO
 from flask_cors import CORS,cross_origin
 
 import argparse
@@ -25,12 +26,10 @@ parser.add_argument(
 args = parser.parse_args()
 env_runtime = args.env
 
-load_dotenv()
 
-#############
+############# FLASK SETUP
 app = Flask(__name__,static_folder='static/dist', template_folder='static/dist')
 CORS(app)
-
 
 # Custom JSON Encoder to handle ObjectId and datetime objects
 class JSONEncoder(json.JSONEncoder):
@@ -43,19 +42,22 @@ class JSONEncoder(json.JSONEncoder):
 
 app.json_encoder = JSONEncoder
 
-################
-
+###### ENV VARIABLES ######
+load_dotenv()
 if env_runtime == "local":
     MONGO_URI = "mongodb://localhost:27017/"
 
 else :
     # # Initialize MongoController
     MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-
-mongo_controller = MongoController(MONGO_URI)
-
+if env_runtime == "local":
+    pdf_url = 'http://localhost:80/'
+else : 
+    pdf_url = os.getenv("PDF_URL",'http://localhost:80')
 model_choice = os.getenv("OPENAI_MODEL_CHOICE")
 openai_api_key = os.getenv("OPEN_AI_API_KEY","failed?")
+
+########################
 
 client = OpenAI(
     api_key=openai_api_key
@@ -64,7 +66,8 @@ system = {
     "model_choice" :  model_choice,
     'system_prompt' : "You are an helpful assistant, you will only use provided informations to answer and will not assume informations. You need to output only relevant information, introduction message are not required"
 }
-builder = CvBuilder(mongo_controller, client, system)
+mongo_controller = MongoController(MONGO_URI)
+builder = CvBuilder(mongo_controller, client, system,pdf_url)
 
 
 ############################################################
@@ -164,17 +167,27 @@ def generate_cv():
         return jsonify({"error": "cv_id parameter is required"}), 400
     # Load the CV using the provided cv_id
     builder.load(cv_id)
-    company_name = builder.company_info['name']
-    output_path = f'./output/cv_{company_name}.pdf'
+    company_name = builder.company_info['name'].strip()
+    user_name = builder.coordinates['full_name'].lower().replace(' ','_')
+    file_name = f'cv_{user_name}_X_{company_name.strip()}.pdf'
+
+    output_path = f'output/{file_name}'
+
     # Generate the CV PDF
     try:
-        builder.generate_cv_pdf(output_path)
+        pdf_content = builder.generate_cv_pdf(output_path)
+        pdf_stream = BytesIO(pdf_content)
     except Exception as e:
         # Handle any errors that occur
         return jsonify({"error": str(e)}), 500
 
     # Send the generated PDF file as a response
-    return send_file(output_path, as_attachment=True, download_name="cv.pdf", mimetype='application/pdf')
+    return send_file(
+        pdf_stream,
+        as_attachment=True,
+        download_name=file_name,
+        mimetype='application/pdf'
+    )
 
   
 @app.route('/generate_cover_letter', methods=['GET'])
@@ -187,18 +200,25 @@ def generate_cover_letter():
     # Load the CV using the provided cv_id
     builder.load(cv_id)
     company_name = builder.company_info['name']
-    output_path = f'./output/cover_letter_{company_name.strip()}.pdf'
+    user_name = builder.coordinates['full_name'].lower().replace(' ','_')
+    file_name = f'cover_letter_{user_name}_X_{company_name.strip()}.pdf'
+    output_path = f'output/{file_name}'
 
     # Generate the CV PDF
     try:
-        builder.generate_cover_letter_pdf(output_path)
+        pdf_content = builder.generate_cover_letter_pdf(output_path)
+        pdf_stream = BytesIO(pdf_content)
     except Exception as e:
         # Handle any errors that occur
         return jsonify({"error": str(e)}), 500
 
     # Send the generated PDF file as a response
-    return send_file(output_path, as_attachment=True, download_name=f"cover_letter_{company_name.strip()}.pdf", mimetype='application/pdf')
-
+    return send_file(
+        pdf_stream,
+        as_attachment=True,
+        download_name=file_name,
+        mimetype='application/pdf'
+    )
 
 if __name__ == '__main__':
     if env_runtime == "local":

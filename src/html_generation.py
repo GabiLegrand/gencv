@@ -1,5 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
-
+import requests
 
 def generate_education_html(template_env,education_context):
     education_template = template_env.get_template('templates/education_template.html')
@@ -74,3 +74,17 @@ def generate_cv_html(static_context,
     # Render the template with the context
     cv_html = cv_template.render(context)
     return cv_html
+
+
+def convet_html_to_pdf(service_url, html_content,output_path):
+    # Send a POST request with the HTML content
+    response = requests.post(service_url + 'pdf', data={'html': html_content})
+    print(response)
+    # Check if the request was successful
+    if response.status_code == 200:
+        # # Write the response content to a PDF file
+        # with open(output_path, 'wb') as file:
+        #     file.write(response.content)
+        return response.content
+    else:
+        print(f"Failed to generate PDF. Status code: {response.status_code}")

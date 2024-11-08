@@ -16,7 +16,10 @@ services:
 
     env_file:
       - .env 
-
+  wkhtmltopdf:
+    image: ciricihq/wkhtmltopdf-aas  # Use the official image from Docker Hub
+    ports:
+      - "80:80"
 ## Uncomment this to use mongodb docker container
 
 #     depends_on:
