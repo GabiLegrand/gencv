@@ -103,6 +103,7 @@ def get_cv(cv_id):
         if cv:
             cv['_id'] = str(cv['_id'])  # Convert ObjectId to string
             cv['user_id'] = str(cv['user_id'])  # Convert ObjectId to string
+            cv['cover_letter'] = cv['cover_letter'].replace('\n','<br>')
             return jsonify(cv)
         else:
             return jsonify({'error': 'CV not found'}), 404
@@ -161,9 +162,10 @@ def generate_cv():
 
     if not cv_id:
         return jsonify({"error": "cv_id parameter is required"}), 400
-    output_path = './output/cv.pdf'
     # Load the CV using the provided cv_id
     builder.load(cv_id)
+    company_name = builder.company_info['name']
+    output_path = f'./output/cv_{company_name}.pdf'
     # Generate the CV PDF
     try:
         builder.generate_cv_pdf(output_path)
@@ -173,6 +175,31 @@ def generate_cv():
 
     # Send the generated PDF file as a response
     return send_file(output_path, as_attachment=True, download_name="cv.pdf", mimetype='application/pdf')
+
+  
+@app.route('/generate_cover_letter', methods=['GET'])
+def generate_cover_letter():
+    # Get cv_id from the query parameters
+    cv_id = request.args.get('cv_id')
+
+    if not cv_id:
+        return jsonify({"error": "cv_id parameter is required"}), 400
+    # Load the CV using the provided cv_id
+    builder.load(cv_id)
+    company_name = builder.company_info['name']
+    output_path = f'./output/cover_letter_{company_name.strip()}.pdf'
+
+    # Generate the CV PDF
+    try:
+        builder.generate_cover_letter_pdf(output_path)
+    except Exception as e:
+        # Handle any errors that occur
+        return jsonify({"error": str(e)}), 500
+
+    # Send the generated PDF file as a response
+    return send_file(output_path, as_attachment=True, download_name=f"cover_letter_{company_name.strip()}.pdf", mimetype='application/pdf')
+
+
 if __name__ == '__main__':
     if env_runtime == "local":
         app.run(debug=True)

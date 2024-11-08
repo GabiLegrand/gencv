@@ -1,0 +1,44 @@
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+    
+    @page {
+      size: A4;
+      margin: 0;
+    }
+    @media print {
+      html, body {
+        width: 210mm;
+        height: 297mm;
+    
+      }
+      
+      /* ... the rest of the rules ... */
+    }
+    
+    body{
+        font-family: 'Roboto', sans-serif;
+        font-size: 18px;
+        padding: 50px;
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+    </style>
+    
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cover letter - Gabriel Ludel X {{company_name}}</title>
+    </head>
+    <body>   
+        <header >
+            <h1>Cover letter - {{full_name}} X {{company_name}}</h1>
+            <p><b>{{position_title}}</b></p>
+        </header>
+
+        <section >
+            <p>{{cover_letter_content}}</p>
+        </section>
+    </body>
+</html>

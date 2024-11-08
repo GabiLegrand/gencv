@@ -21,7 +21,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--generate",
-        choices=["all", "title", "description", "project", "work", "skills", "pdf"],
+        choices=["all", "title", "description", "project", "work", "skills", "pdf",'company','cover_letter'],
         default="all",
         help="Generate allow you to generate a cv or regenerate part of the current CV based on the argument :" + \
             "\n\t`all` : generate all the cv" +  
@@ -68,7 +68,9 @@ if __name__ == "__main__":
         builder.generate_cv_from_job_description(job_description)
         sys.exit()
 
-    elif args.generate == "title":
+    builder.load()
+
+    if args.generate == "title":
         builder.generate_profile_title()
     elif args.generate == "description":
         builder.generate_profile_description()
@@ -78,6 +80,12 @@ if __name__ == "__main__":
         builder.select_work_experience()
     elif args.generate == "skills":
         builder.generate_relevant_skillset()
+    elif args.generate == "company":
+        builder.extract_company_info(builder.job_description)
+    elif args.generate == "cover_letter":
+        builder.generate_cover_letter()
 
-    builder.save()
+    builder.update_current()
+    
     builder.generate_cv_pdf('./output/cv.pdf')
+    builder.generate_cover_letter_pdf('./output/cover_letter.pdf')

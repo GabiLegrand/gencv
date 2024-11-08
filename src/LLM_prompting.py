@@ -67,16 +67,17 @@ def format_CV_work_experience(descriptions,work_experience_meta):
 #################
 
 def extract_company_info_from_description(client, job_description, system, verbose=True):
-    prompt= f"""Given the job description below, identify the company name and write a brief, compelling description of the company. Use the following format to structure the output:
+    prompt= f"""Given the job description below, identify the company name, the position title, and write a brief, compelling description of the company. Use the following format to structure the output:
 
-    [CNAME] company name [/CNAME]
-    [CDESC] company description [/CDESC]
+[CNAME] company name [/CNAME]
+[CDESC] company description [/CDESC]
+[PNAME] position title [/PNAME]
 
-    Job Description:
-    [Paste the job description here]
+Job Description:
+[Paste the job description here]
 
-    The company name should feel appropriate to the industry and the nature of the job, and the description should convey the company's mission, values, and area of expertise in a way that aligns with the job role.
-    {job_description}
+The company name should feel appropriate to the industry and the nature of the job, and the description should convey the company's mission, values, and area of expertise in a way that aligns with the job role.
+{job_description}
     """
 
     company_info_raw = prompt_llm(client, prompt,system,verbose)
@@ -89,7 +90,12 @@ def extract_company_info_from_description(client, job_description, system, verbo
     match = re.search(pattern, company_info_raw, re.DOTALL)
     company_name = match.group(1) if match else None
 
-    company_info = {"name" : company_name, "description" : company_desc}
+    
+    pattern = r"\[PNAME\](.*?)\[/PNAME\]"
+    match = re.search(pattern, company_info_raw, re.DOTALL)
+    position_title = match.group(1) if match else None
+
+    company_info = {"name" : company_name, "description" : company_desc, "position_title" : position_title}
     return company_info
 
 def extract_job_info_from_description(client, job_description, system, verbose=True):
@@ -132,7 +138,7 @@ def generate_cover_letter(client, company_info, job_info,
     """
 
     prompt = f"""Write a personalized cover letter based on the following information, designed to align closely with the job and company requirements. 
-    Make the letter as keyword-rich as possible, reflecting the skills, values, and experience that match the job role. 
+    Make the letter as keyword-rich as possible, reflecting the skills, values, and experience that match the job role of {company_info['position_title']}. 
 
     Enclose the body of the coverletter with this format:
     ```

@@ -48,7 +48,24 @@ class CvBuilder:
         }
 
         r = self.mongo_controller.save_user_cv(self.user_id,self.coordinates, state)
+        self.state_id = r.inserted_id
         print(f"State saved {r}")
+
+    def update_current(self):
+        state = {
+            'job_infos': self.job_infos,
+            'work_context': self.work_context,
+            'project_context': self.project_context,
+            'relevant_skillset': self.relevant_skillset,
+            'profile_description': self.profile_description,
+            'profile_title': self.profile_title,
+            'job_description' : self.job_description,
+            'company_info' : self.company_info,
+            'cover_letter' : self.cover_letter
+        }
+        self.mongo_controller.update_cv(self.state_id,state)
+        
+
 
     def load(self, cv_id:str = None):
         """Load the entire object from a mongo"""
@@ -57,6 +74,7 @@ class CvBuilder:
             state = self.mongo_controller.retrieve_cv_info({"_id": ObjectId(cv_id)})
         else :
             state = self.mongo_controller.retrieve_cv_info({'user_id': self.user_id})
+
         if state :
             self.job_infos = state['job_infos']
             self.work_context = state['work_context']
@@ -67,8 +85,8 @@ class CvBuilder:
             self.job_description = state['job_description']
             self.company_info = state.get('company_info', {'name' : 'Unknown', 'description': 'Unknown'})
             self.cover_letter = state.get('cover_letter', '')
-            state_id = state['_id']
-            print(f"State {state_id} loaded for user {self.user_id}")
+            self.state_id = state['_id']
+            print(f"State {self.state_id} loaded for user {self.user_id}")
         else :
             raise Exception("Error, couldn't load last user CV")
 
@@ -82,6 +100,7 @@ class CvBuilder:
         self.job_description = None 
         self.company_info = None
         self.cover_letter = None 
+        self.state_id = None
 
     def generate_cv_from_job_description(self,job_description):
         self.job_description = job_description
@@ -96,6 +115,24 @@ class CvBuilder:
         # Save CV build
         self.save()
         self.generate_cv_pdf("output/cv.pdf")
+
+    def generate_cover_letter_pdf(self,output_file):
+        
+        if  self.work_context != None and \
+                self.project_context != None and \
+                self.relevant_skillset != None and \
+                self.profile_description != None and \
+                self.profile_title != None :
+            html_content = generate_cover_letter_html(self.company_info['name'],
+                                       self.company_info['position_title'],
+                                       self.coordinates['full_name'],
+                                       self.cover_letter)
+            
+            try:
+                pdfkit.from_string(html_content, output_file)
+                print('Cover letter created!')
+            except Exception as e:
+                print(f"Error generating PDF: {e}")
 
     
     def generate_cv_pdf(self,output_file):

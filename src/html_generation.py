@@ -26,7 +26,21 @@ def generate_project_html(template_env,project_context):
         work_rendered +=  work_template.render(context) + '\n'
     return work_rendered
 
+def generate_cover_letter_html(company_name,position_title,full_name,cover_letter_content):
+    template_env = Environment(loader=FileSystemLoader('.'))
+    cover_letter_template = template_env.get_template('templates/cover_letter_template.html')
 
+
+    context = {
+        "company_name" : company_name,
+        "position_title" : position_title,
+        "full_name" : full_name,
+        "cover_letter_content" : cover_letter_content.replace('\n','<br>')
+    }
+
+    # Render the template with the context
+    cover_letter_html = cover_letter_template.render(context)
+    return cover_letter_html
 
 def generate_cv_html(static_context,
                     profile_title, profile_description,

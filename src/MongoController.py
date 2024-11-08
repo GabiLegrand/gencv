@@ -64,4 +64,4 @@ class MongoController:
         return result
 
     def get_all_cvs_meta(self):
-        return self.mongo_cv_coll.find({}, {'creation_date': -1, 'profile_title': 1})
+        return self.mongo_cv_coll.find({}, {'creation_date': -1, 'profile_title': 1, 'company_info' : 1})
