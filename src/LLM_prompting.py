@@ -4,6 +4,7 @@ import re
 import json
 import uuid
 import os
+from jinja2 import Template
 
 def save_prompt(folder_name: str, content: str):
     # Create the folder if it doesn't exist
@@ -62,6 +63,34 @@ def format_CV_work_experience(descriptions,work_experience_meta):
             work_info_wt_description.append(info)
     return work_info_wt_description
 
+
+def skills_context_to_text(skills_context):
+    return '\n'.join(f"- **{k}** : " +  ', '.join(skills_context[k]) for k in skills_context.keys())
+    
+def work_context_to_text(position_context):
+    template_work_experience = """# {{company_name}} - {{position_title}}
+**Date : {{start_date}} - {{end_date}}
+**Employment Type**: {{employment_type}}
+**Responsibilities**:
+{{responsibilities}}**Skills and Tools Used**: {{skill_list}}"""
+
+
+    responsibilities = ''.join(f' - {r}\n' for r in position_context['responsibilities'])
+    skills = ', '.join(position_context['skills'])
+
+    context = {
+        "company_name" : position_context['company_name'],
+        "position_title" : position_context["title"],
+        "start_date" : position_context['start_date'],
+        "end_date" : position_context['end_date'],
+        "employment_type" : position_context['employment_type'],
+        "responsibilities" :  responsibilities,
+        "skill_list" : skills
+    }
+
+    template = Template(template_work_experience)
+    output = template.render(context)
+    return output
 
 
 #################

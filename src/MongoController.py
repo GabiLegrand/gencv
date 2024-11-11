@@ -21,6 +21,7 @@ class MongoController:
         # if insert_obj.inserted_id :
         #     raise Exception("Controller didn't managed to add user info to database")
         return insert_obj
+    
     def retrieve_user_info(self, query=None):
         """
         retrieve user info based on query, if no query is provided, return the last user_info created
@@ -65,3 +66,7 @@ class MongoController:
 
     def get_all_cvs_meta(self):
         return self.mongo_cv_coll.find({}, {'creation_date': -1, 'profile_title': 1, 'company_info' : 1})
+
+    def update_user_info(self,user_id,user_info):
+        result = self.mongo_user_coll.update_one({'_id': ObjectId(user_id)}, {'$set': user_info})
+        return result

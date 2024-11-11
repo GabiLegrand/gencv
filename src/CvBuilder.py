@@ -23,9 +23,11 @@ class CvBuilder:
 
         self.coordinates = user_data['coordinates']
         self.general_info = user_data['general_info'] 
-        self.skills = user_data['skills']
-        self.work_experience = user_data['work_experience']
-        self.work_experience_meta = user_data['work_experience_meta'] 
+        
+        self.skills = skills_context_to_text(user_data['skills'])
+        self.work_experience = '\n\n'.join(work_context_to_text(v) for v in user_data['work_experience'].values())
+        
+        self.work_experience_meta = user_data['work_experience'] 
         self.education_context = user_data['education'] 
 
         self.coordinates = user_data['coordinates']

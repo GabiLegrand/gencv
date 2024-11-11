@@ -84,6 +84,11 @@ def static_proxy(path):
     return send_from_directory(app.static_folder, path)
 
 
+@app.route('/user')
+def get_user_info():
+    user_data = mongo_controller.retrieve_user_info()
+    user_data['_id'] = str(user_data['_id'])
+    return jsonify(user_data)
 
 # Route to fetch all CV meta data
 @app.route('/cv', methods=['GET'])
@@ -108,6 +113,20 @@ def get_cv(cv_id):
             cv['user_id'] = str(cv['user_id'])  # Convert ObjectId to string
             cv['cover_letter'] = cv['cover_letter'].replace('\n','<br>')
             return jsonify(cv)
+        else:
+            return jsonify({'error': 'CV not found'}), 404
+    except Exception:
+        return jsonify({'error': 'Invalid CV ID'}), 400
+
+
+@app.route('/user/<user_id>', methods=['PUT'])
+@cross_origin(origin="*", supports_credentials=True)
+def update_user(user_id):
+    user_data = request.json
+    try:
+        result = mongo_controller.update_user_info(user_id,user_data)
+        if result.matched_count:
+            return jsonify({'message': 'CV updated successfully'})
         else:
             return jsonify({'error': 'CV not found'}), 404
     except Exception:
